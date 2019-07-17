@@ -1,0 +1,49 @@
+body,p,div,i,ol,ul,li,dl,dt,dd,h1,h2,h3,h4,input,select{margin:0;padding:0;list-style-type:none;font-family: "Microsoft YaHei";font-weight:normal;}
+input{vertical-align: middle}
+img{border:none;}
+body{margin:0px;font-family:"Microsoft YaHei", tahoma,arial,"Hiragino Sans GB",simsun,sans-serif;font-size:14px;color:#333;background: #ffffff;}
+i{font-style:normal;}
+p{margin:0px;}
+form{margin:0px;padding:0px;}
+a{ text-decoration: none;}
+.float_l{float:left;}
+.clearfix{display:inline-block;}
+.clear:after{content:' ';clear:both;display:block;height:0;visibility:hidden;line-height:0}
+.clear{zoom:1}
+.clearFix{display:block;zoom:1}
+.clearFix:after{content:".";display:block;visibility:hidden;height:0;clear:both;}
+.fl{float:left}
+.fr{float:right}
+
+.select-date{background: blue; color:#fff;width:500px;}
+.select-date .date-title{width: 100%;background-color: transparent;color: #fff;line-height: 20px;font-weight: 400;text-align: center;letter-spacing: 2px;;font-size:18px;z-index: 9;padding:10px 0}
+.select-date ul{overflow: hidden;background:blue;}
+.select-date li{position:relative;float: left;width:43px;height:56px;border:1px solid blue;background: blue;text-align:center;line-height: 58px;font-size:18px}
+.select-date .pass,.select-date .future{color:#ccc;opacity:0.5}
+.select-date .day{color:#fff}
+.select-date .today{background: #ff6600}
+.select-date .curday{background: pink}
+.select-date i{display:block;position:absolute;;color:#fff;font-style:normal;font-size:12px}
+.select-date .date{display:none;font-style:none}
+.select-date .rest{right:10px;top:10px;width:15px;height:15px;background:#4AC29A;line-height:15px}
+.select-date .price{bottom:0;left:0;;width:100%;font-size:12px;line-height:20px}
+.select-date .discount{right:10px;top:10px;width:15px;height:15px;background:#ff6600;line-height:15px}
+
+
+.price-calendar{margin-top:10px;background:#fff;}
+.previous-period{width:49px;height:76px;border-bottom:1px solid #00a0e9;border-right:1px solid #e8e8e8;border-top:3px solid #fff;cursor:pointer;}
+.previous-period span.can{background:url(../Images/qt_jgrl.png) no-repeat;background-position:-21px -3px;width:10px;height:18px;display:inline-block;margin-top:28px;margin-left:20px;}
+.previous-period span.not{background:url(../Images/qt_jgrl.png) no-repeat;background-position:-2px -3px;width:10px;height:18px;display:inline-block;margin-top:28px;margin-left:20px;}
+.current-period{width:975px;height:80px;position: relative;}
+.current-period ul{border-left:1px solid #e8e8e8;position: absolute;}
+.current-period ul li{float:left;width:138px;text-align:center;height:76px;border-right:1px solid #e8e8e8;border-bottom:1px solid #00a0e9;border-top:3px solid #fff;cursor:pointer;}
+.current-period ul li.s_curday{border-left:1px solid #00a0e9;border-right:1px solid #00a0e9;border-bottom:1px solid #e8e8e8;border-top:3px solid #00a0e9;}
+.after-period{width:50px;height:76px;border-bottom:1px solid #00a0e9;border-top:3px solid #fff;cursor:pointer;}
+.after-period span.can{background:url(../Images/qt_jgrl.png) no-repeat;background-position:-42px -3px;width:10px;height:18px;display:inline-block;margin-top:28px;margin-left:20px;}
+.after-period span.not{background:url(../Images/qt_jgrl.png) no-repeat;background-position:-60px -3px;width:10px;height:18px;display:inline-block;margin-top:28px;margin-left:20px;}
+.current-period .calendar-price{font-size:20px;height:30px;line-height:30px;}
+.current-period .calendar-price .default{font-size:12px;color: #00a0e9;}
+.current-period .calendar-weekday{padding: 15px 0 0 0;font-size:14px;height:16px;line-height:16px;}
+.current-period .icon{font-size:12px;}
+.price-calendar .moreprice-calendar{width:99px;height:76px;border-bottom:1px solid #00a0e9;border-top:3px solid #fff;border-left:1px solid #e8e8e8;}
+.price-calendar .moreprice-calendar .date-icon{background:url(../Html/Images/qt_jgrl.png) no-repeat;background-position:-2px -28px;width:31px;height:30px;display:inline-block;margin-top:10px;}

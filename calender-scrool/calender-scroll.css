@@ -1,0 +1,69 @@
+body,p,div,i,ol,ul,li,dl,dt,dd,h1,h2,h3,h4,input,select{margin:0;padding:0;list-style-type:none;font-family: "Microsoft YaHei";font-weight:normal;}
+input{vertical-align: middle}
+img{border:none;}
+body{margin:0px;font-family:"Microsoft YaHei", tahoma,arial,"Hiragino Sans GB",simsun,sans-serif;font-size:14px;color:#333;background: #ffffff;}
+i{font-style:normal;}
+p{margin:0px;}
+form{margin:0px;padding:0px;}
+a{ text-decoration: none;}
+.float_l{float:left;}
+.clearfix{display:inline-block;}
+.clear:after{content:' ';clear:both;display:block;height:0;visibility:hidden;line-height:0}
+.clear{zoom:1}
+.clearFix{display:block;zoom:1}
+.clearFix:after{content:".";display:block;visibility:hidden;height:0;clear:both;}
+.fl{float:left}
+.fr{float:right}
+
+/*最低价日历-单程*/
+/*.minprice-oneway{display:none;}*/
+.minprice-month{font-size:16px;line-height:40px;padding-left:60px;}
+.minprice-xz{}
+.last-month{float:left;width:58px;}
+.last-month span.can{background:url(../Images/qt_jgrl.png) no-repeat;background-position:-2px -63px;width:32px;height:32px;float:left;margin:180px 0 0 14px;_display:inline;}
+.last-month span.not{background:url(../Images/qt_jgrl.png) no-repeat;background-position:-38px -63px;width:32px;height:32px;float:left;margin:180px 0 0 14px;_display:inline;}
+.month-content{float:left;width:640px;height:391px;position:relative;overflow:hidden;}
+.month-content .tab-title{background:#d8d8d8;border:1px solid #d8d8d8;border-collapse:collapse;}
+.month-content .tab-title th{border:1px solid #d8d8d8;height:30px;}
+.next-month{float:left;width:58px;}
+.next-month span.can{background:url(../Images/qt_jgrl.png) no-repeat;background-position:-2px -100px;width:32px;height:32px;float:left;margin:180px 0 0 14px;_display:inline;}
+.next-month span.not{background:url(../Images/qt_jgrl.png) no-repeat;background-position:-38px -100px;width:32px;height:32px;float:left;margin:180px 0 0 14px;_display:inline;}
+.minprice-tips{font-size:12px;padding-left:60px;line-height:40px;}
+.month-content .tab-calendar{border:1px solid #d8d8d8;border-left: 0;border-collapse:collapse;}
+.month-content .tab-calendar td{padding:5px 0;}
+.month-content .tab-calendar .day {text-align: center; font-size: 16px;padding-top: 10px;color: #888;font-family: arial; }
+.month-content .tab-calendar .price {    color: #333;text-align: center;font-size: 14px;font-family: 微软雅黑; }
+.month-content .tab-calendar .default{font-size:13px;color: #00a0e9;padding-top: 5px;display: inline-block;}
+
+.month-content .tab-calendar .hot_price{font-size:18px;padding-left:10px; color:#ff4e00;}
+.month-content .tab-calendar dfn{font-style:normal;font-size:12px;font-weight:200;}
+
+.month-content .tab-calendar ul{ float: left;border-left: 1px solid #d8d8d8;border-top: 1px solid #d8d8d8;width: 638px;}
+.month-content .tab-calendar ul li{position: relative; float: left;width: 90px;height:58px;border-right: 1px solid #d8d8d8;border-bottom: 1px solid #d8d8d8;}
+
+
+
+/*最低价日历-多程*/
+.minprice-multipass{display:none;}
+.roundtrip-tab{background:#f8f8f8;border:1px solid #d8d8d8;border-collapse:collapse;}
+.outward-voyage{font-size:16px;padding:5px 0 5px 120px;}
+.backtrip{width:30px;height:100%;white-space:normal;position:static;font-size:16px;text-align:center;}
+.roundtrip-tab th{background:#e8e8e8;padding:8px 0;font-size:14px;color:#333;}
+.roundtrip-tab table{border:1px solid #d8d8d8;border-collapse:collapse;}
+.month-content .fill{position:absolute;z-index:3;width:97px;height:65px;background:#f7f7f7;border:1px solid #e4e4e4;}
+.month-content .backpricerl th{font-size:12px;width:80px;}
+.month-content .backpricerl tbody th{line-height:30px;}
+.month-content .backpricerl tbody td{padding-left:10px;background:#fff;}
+.month-content .backpricerl .price{font-size:16px;}
+.month-content .backpricerl .hot_price{ color:#ff4e00;}
+.month-content .backpricerl dfn{font-style:normal;font-size:12px;}
+
+
+.s_pass{line-height: 42px;}
+.s_pass .day{color: #ccc!important;}
+.s_pass .price{display: none;}
+.s_curday{background: #00a0e9}
+.s_curday .day{color:#fffc!important;}
+.s_curday .default{color:#fffc!important;}
+
+.discount{position: absolute;top:0;right:0;padding:3px;background-color: #ff6600;color:#fff;}

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>vuex</title>
+    <script src="../jquery-1.11.3.min.js"></script>
+    <script src="../moment.js"></script>
+    <script src="../calendar.js"></script>
+    <script src="../box-scroll.js"></script>
+    <link rel="stylesheet" href="date-scroll.css"/>
+</head>
+<body>
+<div class="clearFix price-calendar">
+    <!-- style="display: none"-->
+    <div class="fl previous-period" style="height: 76px;"><span class="can" style="margin-top: 28px;"><</span>
+    </div>
+    <div class="fl current-period" style="overflow: hidden; height: 80px;">
+        <ul class="current-ul clearFix" style="width: 200%"></ul>
+    </div>
+    <div class="fl after-period" style="height: 76px;"><span class="can" style="margin-top: 28px;"> > </span></div>
+    <!--<div class="fl moreprice-calendar" id="PriceCalendar" style="height: 76px;">-->
+    <!--<div class="center"><i class="date-icon"></i></div>-->
+    <!--<div class="center"><span>价格日历</span></div>-->
+    <!--</div>-->
+</div>
+</body>
+</html>
+<script>
+    // 正常情况下,价格数据是从接口请求的,这里用定时器代替
+    $(function () {
+        var c1 = new Calendar();
+        var l1 = new setLodaDateSwrap()
+        var step = 7; // 单位:天,7天切换一次
+
+        // 时间范围
+        var dataRange = {
+            startDate: moment().format('YYYY-MM-DD'),
+            endDate: moment(moment().add(1, 'month')).format('YYYY-MM-DD')
+        }
+        var startDate = dataRange.startDate; // 初始日期
+        var endDate = moment(moment(startDate).add(step, 'days')).format('YYYY-MM-DD'); // 当天往后推13天加上今天一共14天,正好是UL父元素的2倍
+        var defaultSelectDate = dataRange.startDate;
+        // 初始化
+        var CalendarInfo = getDateData(startDate, endDate, defaultSelectDate);
+        $('.current-period ul').html(setHtml(CalendarInfo)); //填充日历到页面,并且设置价格
+
+        l1.init('.price-calendar', {
+            // step: step,
+            Calendar: 'ul',
+            prev: '.previous-period',
+            next: '.after-period',
+            prevClick: function (callback) {
+                // 停止滚动:prevBtnIsDisabled()方法自己定义,如果返回false,就代表此按钮置灰,
+                // if (!prevBtnIsDisabled()) {return false;}
+                if (callback) {
+                    callback(function () {
+                        startDate = (moment(startDate).add(-step, 'day')).format('YYYY-MM-DD');
+                        endDate = moment(moment(startDate).add(step, 'days')).format('YYYY-MM-DD');
+
+                        var dateJson = localStorage.getItem('dateJsons') ? JSON.parse(localStorage.getItem('dateJsons')) : [];
+                        CalendarInfo = getDateData(startDate, endDate, defaultSelectDate); // 日历数据--没有价格
+                        $('.current-period ul').html(setHtml(CalendarInfo, dateJson));// 给日历添加价格
+                    })
+                }
+                return true;
+            },
+            nextClick: function (callback) {
+                // 停止滚动:nextBtnIsDisabled(),方法自己定义,如果返回false,就代表此按钮置灰
+                // if (!nextBtnIsDisabled()) {return false; }
+                if (callback) {
+                    callback(function () {
+                        startDate = (moment(startDate).add(step, 'day')).format('YYYY-MM-DD');
+                        endDate = moment(moment(startDate).add(step, 'days')).format('YYYY-MM-DD');
+
+                        CalendarInfo = getDateData(startDate, endDate, defaultSelectDate); // 日历数据--没有价格
+                        var dateJson = localStorage.getItem('dateJsons') ? JSON.parse(localStorage.getItem('dateJsons')) : [];
+                        $('.current-period ul').html(setHtml(CalendarInfo, dateJson));// 给日历添加价格
+                    })
+                }
+                return true;
+            },
+        });
+
+        $(document).on('click', '.current-ul li', function () {
+            var that = this;
+            $(this).addClass('s_curday').siblings('li').removeClass('s_curday');
+            defaultSelectDate = $(this).attr('date'); //
+
+            setTimeout(function () {
+                var dateJsons = [];
+                if (localStorage.getItem('dateJsons')) {
+                    dateJsons = JSON.parse(localStorage.getItem('dateJsons'))
+                }
+                var item = {
+                    "date": $(that).attr('date'),
+                    "price": 200
+                }
+                dateJsons.push(item);
+                localStorage.setItem('dateJsons', JSON.stringify(dateJsons))
+                $(that).find('.default').html(item.price);
+            }, 2000)
+        })
+
+        function setHtml(CalendarInfo, priceJson) {
+            console.log(CalendarInfo)
+            var html = ''
+            for (var key in CalendarInfo) {
+                for (var i = 0; i < CalendarInfo[key].date.length; i++) {
+                    var items = CalendarInfo[key].date[i];
+                    if (items.classname && items.daytype == 's_day') {
+                        if (priceJson && priceJson.length) {
+                            for (var j = 0; j < priceJson.length; j++) {
+                                if (moment(items.date).format('YYYY-MM-DD') == moment(priceJson[j].date).format('YYYY-MM-DD')) {
+                                    items.addPrice = priceJson[j].price;
+                                    break;
+                                }
+                            }
+                        }
+                        var price = items.addPrice ? items.addPrice : '查看价格';
+                        html += '<li style="height:76px" class="dayprice ' + items.classname + '" date="' + items.date + '" riqi="' + items.week + '">\n' +
+                            '                <div class="calendar-weekday qucheng" date="2019/11/20"><span>' + moment(items.date).format('MM-DD') + '</span><span>周' + c1.setWeek(items.week) + '</span></div>\n' +
+                            '                <div class="calendar-price hide buhanshui"><span class="default">' + price + '</span>\n' +
+                            '                </div>\n' +
+                            '            </li>';
+                    }
+                }
+            }
+
+            return html + html;
+        }
+
+
+        function getDateData(startDate, endDate, defaultSelectDate) {
+            return c1.init({startDate: startDate, endDate: endDate, defaultSelectDate: [defaultSelectDate]}); // 日期数据
+        }
+
+        /*demo*/
+        var priceData = [
+            {date: '2019-02-11', price: '100'},
+            {date: '2019-02-12', price: '100', rest: '休'},
+            {date: '2019-02-13', price: '100', discount: '折'}]
+        console.log(c1.init({
+            startDate: '2019-02-06',
+            endDate: '2019-04-22',
+            defaultSelectDate: ['2019-02-09'],
+            dateJson: priceData
+        }))
+
+    })
+</script>

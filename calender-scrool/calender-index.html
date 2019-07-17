@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>vuex</title>
+    <script src="../jquery-1.11.3.min.js"></script>
+    <script src="../moment.js"></script>
+    <script src="../calendar.js"></script>
+    <script src="../box-scroll.js"></script>
+    <link rel="stylesheet" href="calender-scroll.css"/>
+</head>
+<body>
+<div class="clearFix price-calendar">
+    <input id="start" type="text" value="2019-01-02" placeholder="开始时间"/>
+    <input id="end" type="text" value="2019-11-14" placeholder="结束时间"/>
+    <input id="current" type="text" value="2019-06-05" placeholder="当前选中的时间"/>
+    <button id="btn">显示价格日历</button>
+    <div class="minprice-oneway layui-layer-wrap" id="dCalendar" style="display: none;">
+        <div class="minprice-month">2019年7月</div>
+        <div class="minprice-xz clearFix">
+            <div class="last-month"><span class="not"> < </span></div>
+            <div class="month-content">
+                <table class="tab-title" style="position:absolute;z-index:2;left:0;top:0" width="100%" cellspacing="0"
+                       cellpadding="0" border="1">
+                    <tbody>
+                    <tr height="30">
+                        <th width="72">SUN 日</th>
+                        <th width="72">MON 一</th>
+                        <th width="72">TUE 二</th>
+                        <th width="72">WED 三</th>
+                        <th width="72">THU 四</th>
+                        <th width="72">FRI 五</th>
+                        <th width="72">SAT 六</th>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <div id="tableCalendar" class="tab-calendar returnCalendar"
+                     style="position: relative; z-index: 1; top:30px;width:1280px;">
+
+                </div>
+            </div>
+            <div class="next-month"><span class="can"> > </span></div>
+        </div>
+        <div class="minprice-tips">
+            <span>因票价变动频繁，请以实时查询报价为准。</span>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+<script>
+    $(function () {
+        var c1 = new Calendar();
+        var l1 = new setLodaDateSwrap()
+
+        // 时间范围
+        // var dataRange = {
+        //     startDate: $('#start').val(),// moment().format('YYYY-MM-DD'),
+        //     endDate: $('#end').val()// moment(moment().add(4, 'month')).format('YYYY-MM-DD') // 往后推4个月,加上当前月份,一共显示5个月份
+        // }
+        // var startDate = dataRange.startDate; //moment(moment(dataRange.startDate).add(5, 'days')).format('YYYY-MM-DD'); // 初始日期
+        // var endDate = moment(dataRange.startDate).format('YYYY-MM') == moment(dataRange.endDate).format('YYYY-MM') ? dataRange.endDate : moment(startDate).endOf('month').format('YYYY-MM-DD');  // 初始日期
+        // var defaultSelectDate =$('#current').val(); // 默认选中的日期
+
+        var dataRange = {startDate: '', endDate: ''}, startDate = '', endDate = '', defaultSelectDate = ''; // 全局变量
+
+
+        // 初始化
+        var dateJson = localStorage.getItem('dateJsons') ? JSON.parse(localStorage.getItem('dateJsons')) : [];
+        l1.init('.price-calendar', {
+            Calendar: '#tableCalendar',
+            prev: '.last-month',
+            next: '.next-month',
+            prevClick: function (callback) {
+                if (!prevBtnIsDisabled()) {
+                    return false;
+                }
+
+                if (callback) {
+                    callback(function () {
+                        var dateJson = localStorage.getItem('dateJsons') ? JSON.parse(localStorage.getItem('dateJsons')) : [];
+                        CalendarInfo = getDateData(startDate, endDate, defaultSelectDate); // 日历数据--没有价格
+                        $('#tableCalendar').html(setHtml(CalendarInfo, dateJson));// 给日历添加价格
+                    })
+                }
+                return true;
+            },
+            nextClick: function (callback) {
+                if (!nextBtnIsDisabled()) {
+                    return false;
+                }
+                if (callback) {
+                    callback(function () {
+                        CalendarInfo = getDateData(startDate, endDate, defaultSelectDate); // 日历数据--没有价格
+                        var dateJson = localStorage.getItem('dateJsons') ? JSON.parse(localStorage.getItem('dateJsons')) : [];
+                        $('#tableCalendar').html(setHtml(CalendarInfo, dateJson));// 给日历添加价格
+                    })
+                }
+                return true;
+            }
+        });
+
+        $('#btn').on('click', function () {
+            $('#dCalendar').show();
+            dataRange = {
+                startDate: $('#start').val(),// moment().format('YYYY-MM-DD'),
+                endDate: $('#end').val()// moment(moment().add(4, 'month')).format('YYYY-MM-DD') // 往后推4个月,加上当前月份,一共显示5个月份
+            }
+            startDate = dataRange.startDate; //moment(moment(dataRange.startDate).add(5, 'days')).format('YYYY-MM-DD'); // 初始日期
+            endDate = moment(dataRange.startDate).format('YYYY-MM') == moment(dataRange.endDate).format('YYYY-MM') ? dataRange.endDate : moment(startDate).endOf('month').format('YYYY-MM-DD');  // 初始日期
+            defaultSelectDate = $('#current').val();
+            var CalendarInfo = getDateData(startDate, endDate, defaultSelectDate); //获取日历
+            $('#tableCalendar').html(setHtml(CalendarInfo, dateJson)); //填充日历到页面,并且设置价格
+        })
+        $(document).on('click', '#tableCalendar li', function () {
+            var that = this;
+            $(this).addClass('s_curday').siblings('li').removeClass('s_curday');
+            defaultSelectDate = $(this).attr('date'); //
+            $('#current').val(defaultSelectDate);
+            setTimeout(function () {
+                var dateJsons = [];
+                if (localStorage.getItem('dateJsons')) {
+                    dateJsons = JSON.parse(localStorage.getItem('dateJsons'))
+                }
+                var item = {
+                    "date": $(that).attr('date'),
+                    "price": 200,
+                    discount: '折'
+                }
+                dateJsons.push(item);
+                localStorage.setItem('dateJsons', JSON.stringify(dateJsons))
+                $(that).find('.default').html(item.price);
+            }, 2000)
+        })
+
+        function setHtml(CalendarInfo, priceJson) {
+            var keyArr = Object.keys(CalendarInfo); //讲对象转化成数组,然后取索引
+            var CalendarInfo0 = CalendarInfo[keyArr[0]];
+            $('.minprice-month').html(CalendarInfo0.title);
+
+            console.log(CalendarInfo)
+
+            // 获取下个月的日期
+            var nextInfo = c1.init({
+                startDate: moment(startDate).add(1, 'month').format('YYYY-MM-DD'),
+                endDate: moment(startDate).add(1, 'month').endOf('month').format('YYYY-MM-DD')
+            });
+
+            var html = '<ul  date="2019/7">';
+            for (var i = 0; i < CalendarInfo[keyArr[0]].date.length; i++) {
+                var items = CalendarInfo[keyArr[0]].date[i];
+                var tags = '';
+                if (items.classname) {
+                    if (priceJson && priceJson.length) {
+                        for (var j = 0; j < priceJson.length; j++) {
+                            if (moment(items.date).format('YYYY-MM-DD') == moment(priceJson[j].date).format('YYYY-MM-DD')) {
+                                items.addPrice = priceJson[j].price;
+                                for (var k in priceJson[j]){
+                                    if(k!='date'&&k!='price'){
+                                        tags += '<span class="'+k+'">'+priceJson[j][k]+'</span> ';
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                    }
+                    var price = items.addPrice ? items.addPrice : '查看价格';
+
+
+                    console.log(tags)
+                    html += '<li class="date ' + items.classname + '" date="' + items.date + '" riqi="' + items.week + '">' +
+                        '                            <div class="day">' + items.day + '</div>' +
+                        '                            <div class="price buhanshui"><span class="default">' + price + '</span></div>' +
+                        '                            <div class="price hanshui" style="display: none;"><span class="default">查看价格</span></div>' +tags
+                        '                        </li>'
+
+                } else {
+                    html += '<li class="date">' +
+                        '                            <div class="day">--</div>' +
+                        '                            <div class="price buhanshui"><span class="default"></span></div>' +
+                        '                        </li>'
+                }
+            }
+            var nextInfoKeyArr = Object.keys(nextInfo); //讲对象转化成数组,然后取索引
+            // 获取下一个月最前面空格有几个,
+            var afterPassNumber = 0;
+            for (var i = 0; i < nextInfo[nextInfoKeyArr[0]].date.length; i++) {
+                if (!nextInfo[nextInfoKeyArr[0]].date[i].classname) {
+                    afterPassNumber++;
+                }
+            }
+            if (afterPassNumber > 0) {
+                // 如果大于0个的话,就用7减一下
+                for (var i = 0; i < (7 - afterPassNumber); i++) {
+                    html += '<li class="date">' +
+                        '                            <div class="day">--</div>' +
+                        '                            <div class="price buhanshui"><span class="default"></span></div>' +
+                        '                        </li>'
+                }
+            }
+            html += '</ul>';
+
+            return html + html;
+        }
+
+        function nextBtnIsDisabled() {
+            var a = moment(endDate); // 切换的最后一天
+            var b = moment(dataRange.endDate); // 设置的截止时间
+            if (moment(a).diff(b) >= 0) {
+                endDate = dataRange.endDate
+                startDate = moment(endDate).startOf('month').format('YYYY-MM-DD');
+                return false;
+            }
+            startDate = moment(startDate).add(1, 'month').startOf('month').format('YYYY-MM-DD');
+            if (moment(endDate).add(1, 'month').format('YYYY-MM') == moment(dataRange.endDate).format('YYYY-MM')) {
+                endDate = dataRange.endDate;
+            } else {
+                endDate = moment(startDate).endOf('month').format('YYYY-MM-DD');
+            }
+            return true;
+        }
+
+        function prevBtnIsDisabled() {
+            var a = moment(startDate); // 切换的第一天
+            var b = moment(dataRange.startDate); // 设置的开始时间
+            if (moment(b).diff(a) >= 0) {
+                startDate = dataRange.startDate;
+                endDate = moment(startDate).endOf('month').format('YYYY-MM-DD');
+                return false;
+            }
+            if (moment(startDate).add(-1, 'month').format('YYYY-MM') == moment(dataRange.startDate).format('YYYY-MM')) {
+                startDate = dataRange.startDate;
+            } else {
+                startDate = (moment(startDate).add(-1, 'month')).startOf('month').format('YYYY-MM-DD');
+            }
+            endDate = moment(startDate).endOf('month').format('YYYY-MM-DD');
+            return true;
+        }
+
+
+        function getDateData(startDate, endDate, defaultSelectDate) {
+            return c1.init({startDate: startDate, endDate: endDate, defaultSelectDate: [defaultSelectDate]});
+        }
+
+    })
+</script>
